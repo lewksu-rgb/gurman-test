@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>модница или колхозница? 🌸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f0a0d;
+    --card-bg:#1a1218;
+    --rose:#C4788A;
+    --gold:#C9A84C;
+    --gold-light:#f2d98a;
+    --grad: linear-gradient(90deg, var(--rose) 0%, var(--gold) 55%, var(--gold-light) 100%);
+    --text:#ffffff;
+    --muted:#c4a0aa;
+    --opt-bg:#1f1520;
+    --opt-border:#3d2535;
+    --opt-hover:#2a1a28;
+    --opt-selected-bg:#2a1a20;
+    --radius:12px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px 16px;
+  }
+
+  h1,h2,h3, .serif{
+    font-family:'Cormorant Garamond', serif;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    position:relative;
+    min-height:560px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .screen{
+    width:100%;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    animation:fadeIn 0.35s ease;
+  }
+
+  .screen.active{ display:flex; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- welcome ---------- */
+  .welcome-emoji{
+    font-size:52px;
+    margin-bottom:8px;
+  }
+
+  .welcome-title{
+    font-size:38px;
+    font-weight:700;
+    background:var(--grad);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1.15;
+    margin:0 0 18px;
+    text-transform:lowercase;
+    letter-spacing:0.5px;
+  }
+
+  .welcome-sub{
+    font-size:17px;
+    color:var(--text);
+    line-height:1.5;
+    margin:0 0 6px;
+  }
+
+  .welcome-meta{
+    font-size:15px;
+    color:var(--muted);
+    margin:0 0 36px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:var(--radius);
+    padding:16px 28px;
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    width:100%;
+    transition:transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+    text-transform:lowercase;
+  }
+
+  .btn:active{ transform:scale(0.97); }
+
+  .btn-grad{
+    background:var(--grad);
+    background-size:200% 100%;
+    color:#ffffff;
+    position:relative;
+    overflow:hidden;
+    animation:btnShimmer 3.5s ease-in-out infinite;
+  }
+
+  .btn-grad::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-60%;
+    width:40%;
+    height:100%;
+    background:linear-gradient(115deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform:skewX(-20deg);
+    animation:btnSweep 3.5s ease-in-out infinite;
+  }
+
+  @keyframes btnShimmer{
+    0%, 100%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+  }
+
+  @keyframes btnSweep{
+    0%{ left:-60%; }
+    35%{ left:130%; }
+    100%{ left:130%; }
+  }
+
+  .btn-outline{
+    background:transparent;
+    color:var(--gold);
+    border:1.5px solid var(--gold);
+  }
+
+  .btn-outline:hover{
+    background:rgba(201,168,76,0.1);
+  }
+
+  .btn-stack{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+    margin-top:28px;
+  }
+
+  /* ---------- quiz ---------- */
+  .quiz-wrap{
+    width:100%;
+  }
+
+  .progress-track{
+    width:100%;
+    height:6px;
+    background:#2a1a20;
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+
+  .progress-fill{
+    height:100%;
+    background:var(--grad);
+    border-radius:999px;
+    width:0%;
+    transition:width 0.4s ease;
+  }
+
+  .progress-label{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:24px;
+    letter-spacing:0.5px;
+  }
+
+  .q-number{
+    font-family:'Cormorant Garamond', serif;
+    font-size:21px;
+    color:var(--rose);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+
+  .q-text{
+    font-size:22px;
+    font-weight:600;
+    line-height:1.35;
+    margin-bottom:24px;
+    text-align:left;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+  }
+
+  .option{
+    background:var(--opt-bg);
+    color:var(--text);
+    border:1.5px solid var(--opt-border);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    text-align:left;
+    line-height:1.4;
+    cursor:pointer;
+    transition:background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+
+  .option:hover{
+    background:var(--opt-hover);
+  }
+
+  .option:active{
+    transform:scale(0.98);
+  }
+
+  .option.selected{
+    border-color:var(--rose);
+    color:var(--rose);
+    background:var(--opt-selected-bg);
+  }
+
+  .option:disabled{
+    cursor:default;
+  }
+
+  .option .opt-letter{
+    color:var(--gold);
+    font-weight:700;
+    margin-right:8px;
+  }
+
+  /* ---------- calculating ---------- */
+  .calc-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+  }
+
+  .calc-number{
+    font-family:'Cormorant Garamond', serif;
+    font-size:80px;
+    font-weight:700;
+    background:var(--grad);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1;
+  }
+
+  .calc-text{
+    font-size:17px;
+    color:var(--muted);
+  }
+
+  .spinner{
+    width:34px;
+    height:34px;
+    border:3px solid #2a1a20;
+    border-top-color:var(--rose);
+    border-radius:50%;
+    animation:spin 0.9s linear infinite;
+  }
+
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- result ---------- */
+  .result-wrap{
+    animation:resultPop 0.5s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  @keyframes resultPop{
+    from{ opacity:0; transform:scale(0.85); }
+    to{ opacity:1; transform:scale(1); }
+  }
+
+  .result-emoji{
+    font-size:80px;
+    margin-bottom:8px;
+    display:inline-block;
+  }
+
+  .result-emoji.crown{
+    position:relative;
+    display:inline-block;
+    animation:shine 1.8s ease-in-out infinite;
+  }
+
+  .result-emoji.crown::before,
+  .result-emoji.crown::after{
+    content:"✨";
+    position:absolute;
+    font-size:22px;
+    opacity:0;
+    animation:twinkle 1.8s ease-in-out infinite;
+  }
+
+  .result-emoji.crown::before{
+    top:-8px;
+    left:-22px;
+    animation-delay:0.3s;
+  }
+
+  .result-emoji.crown::after{
+    bottom:0px;
+    right:-24px;
+    font-size:18px;
+    animation-delay:0.9s;
+  }
+
+  @keyframes shine{
+    0%{ filter:drop-shadow(0 0 8px rgba(242,217,138,0.7)) drop-shadow(0 0 2px rgba(201,168,76,0.6)); transform:scale(1) rotate(-2deg); }
+    50%{ filter:drop-shadow(0 0 22px rgba(242,217,138,0.95)) drop-shadow(0 0 36px rgba(201,168,76,0.8)) drop-shadow(0 0 10px rgba(196,120,138,0.5)); transform:scale(1.1) rotate(2deg); }
+    100%{ filter:drop-shadow(0 0 8px rgba(242,217,138,0.7)) drop-shadow(0 0 2px rgba(201,168,76,0.6)); transform:scale(1) rotate(-2deg); }
+  }
+
+  @keyframes twinkle{
+    0%, 100%{ opacity:0; transform:scale(0.4) rotate(0deg); }
+    50%{ opacity:1; transform:scale(1.15) rotate(20deg); }
+  }
+
+  .result-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:30px;
+    font-weight:700;
+    background:var(--grad);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin:6px 0 18px;
+    text-transform:lowercase;
+  }
+
+  .result-text{
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text);
+    white-space:pre-line;
+    margin-bottom:8px;
+  }
+
+  .result-score{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:30px;
+    letter-spacing:0.5px;
+  }
+
+  .toast{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--grad);
+    color:#ffffff;
+    padding:12px 20px;
+    border-radius:var(--radius);
+    font-size:14px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:50;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .footer-brand{
+    margin-top:32px;
+    font-size:12px;
+    color:#5a3540;
+    letter-spacing:0.5px;
+  }
+
+  @media (max-width:360px){
+    .welcome-title{ font-size:30px; }
+    .q-text{ font-size:19px; }
+    .calc-number{ font-size:62px; }
+    .result-emoji{ font-size:62px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+  <section class="screen active" id="screen-welcome">
+    <div class="welcome-emoji">🌸</div>
+    <h1 class="welcome-title">модница или колхозница? 🌸</h1>
+    <p class="welcome-sub">честный тест про стиль</p>
+    <p class="welcome-sub">от эстетики столичной жизни</p>
+    <p class="welcome-meta">10 вопросов которые всё расскажут</p>
+    <button class="btn btn-grad" id="btn-start">узнать правду 😄</button>
+    <div class="footer-brand">эстетика столичной жизни</div>
+  </section>
+
+  <!-- ЭКРАН 2: ВОПРОСЫ -->
+  <section class="screen" id="screen-quiz">
+    <div class="quiz-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">1/10</div>
+      <div class="q-number" id="q-number">вопрос 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3: ПОДСЧЁТ -->
+  <section class="screen" id="screen-calc">
+    <div class="calc-wrap">
+      <div class="spinner"></div>
+      <div class="calc-number" id="calc-number">0</div>
+      <div class="calc-text">определяем твой стиль... 🌸</div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 4: РЕЗУЛЬТАТ -->
+  <section class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="result-emoji" id="result-emoji"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-text" id="result-text"></p>
+      <p class="result-score" id="result-score"></p>
+    </div>
+    <div class="btn-stack">
+      <button class="btn btn-grad" id="btn-share">поделиться с подругой 🌸</button>
+      <button class="btn btn-outline" id="btn-restart">пройти ещё раз</button>
+      <button class="btn btn-outline" id="btn-subscribe">эстетика столичной жизни 🖤</button>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">скопировано в буфер обмена 🖤</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var QUESTIONS = [
+    {
+      text: "пятница вечер — зовут в ресторан через час. ты:",
+      options: [
+        { t: "надену что удобно — главное успеть", v: 1 },
+        { t: "быстро найду что-то трендовое из новых покупок", v: 2 },
+        { t: "у меня уже есть готовый образ на такой случай", v: 3 },
+        { t: "соберу образ за 15 минут — я умею это делать", v: 4 },
+        { t: "выйду безупречно — даже за час это реально 👑", v: 5 }
+      ]
+    },
+    {
+      text: "базовый гардероб для тебя это:",
+      options: [
+        { t: "джинсы кроссовки и худи — классика", v: 1 },
+        { t: "всё что сейчас в тренде", v: 2 },
+        { t: "несколько универсальных вещей которые сочетаются", v: 3 },
+        { t: "качественные базовые вещи без лого и принтов", v: 4 },
+        { t: "капсульный гардероб где всё идеально друг с другом", v: 5 }
+      ]
+    },
+    {
+      text: "ты идёшь в театр. наряд:",
+      options: [
+        { t: "нарядные джинсы и красивый верх — и так сойдёт", v: 1 },
+        { t: "что-то яркое и модное — хочу выделиться", v: 2 },
+        { t: "платье которое купила специально для таких случаев", v: 3 },
+        { t: "элегантное миди и каблук — театр обязывает", v: 4 },
+        { t: "продуманный образ — театр это повод одеться", v: 5 }
+      ]
+    },
+    {
+      text: "аксессуары для тебя:",
+      options: [
+        { t: "минимум — сумка и всё", v: 1 },
+        { t: "чем больше тем лучше — люблю яркие детали", v: 2 },
+        { t: "подбираю к образу — украшения сумка обувь", v: 3 },
+        { t: "одна качественная деталь которая говорит всё", v: 4 },
+        { t: "аксессуары делают образ — без них он неполный", v: 5 }
+      ]
+    },
+    {
+      text: "ты видишь красивую вещь но она неудобная. ты:",
+      options: [
+        { t: "не куплю — комфорт важнее", v: 1 },
+        { t: "куплю если это тренд сезона", v: 2 },
+        { t: "подумаю — зависит от вещи", v: 3 },
+        { t: "куплю если она вписывается в мой стиль", v: 4 },
+        { t: "красота требует жертв — куплю 😄", v: 5 }
+      ]
+    },
+    {
+      text: "как ты относишься к трендам:",
+      options: [
+        { t: "слежу краем глаза но особо не следую", v: 1 },
+        { t: "обожаю — всегда хочу быть в теме", v: 2 },
+        { t: "беру из трендов то что подходит именно мне", v: 3 },
+        { t: "тренды приходят и уходят — у меня свой стиль", v: 4 },
+        { t: "я сама себе тренд 👑", v: 5 }
+      ]
+    },
+    {
+      text: "отдых на пляже. твой образ:",
+      options: [
+        { t: "купальник и всё — мы же на пляже", v: 1 },
+        { t: "яркий модный купальник — хочу фото для инсты", v: 2 },
+        { t: "купальник + парео + соломенная шляпа", v: 3 },
+        { t: "минималистичный купальник, шляпа и золотые украшения — просто и элегантно", v: 4 },
+        { t: "продуманный образ от купальника до пляжного платья — даже на пляже я безупречна 👑", v: 5 }
+      ]
+    },
+    {
+      text: "шопинг для тебя:",
+      options: [
+        { t: "покупаю когда нужно и что нужно", v: 1 },
+        { t: "обожаю — особенно новые коллекции", v: 2 },
+        { t: "покупаю осознанно — только то что впишется в гардероб", v: 3 },
+        { t: "редко но метко — качество важнее количества", v: 4 },
+        { t: "шопинг это искусство и я в нём профессионал", v: 5 }
+      ]
+    },
+    {
+      text: "деловая встреча. ты оденешься:",
+      options: [
+        { t: "строго и скучно — работа есть работа", v: 1 },
+        { t: "модно — даже на работе хочу выглядеть стильно", v: 2 },
+        { t: "профессионально но с изюминкой", v: 3 },
+        { t: "классика которая говорит сама за себя", v: 4 },
+        { t: "образ который запомнят — деловой но с характером", v: 5 }
+      ]
+    },
+    {
+      text: "твоя философия стиля в одной фразе:",
+      options: [
+        { t: "главное чтобы было удобно", v: 1 },
+        { t: "быть в тренде — значит быть современной", v: 2 },
+        { t: "стиль это когда образ говорит за тебя", v: 3 },
+        { t: "меньше — значит лучше. качество не количество", v: 4 },
+        { t: "стиль это не одежда — это способ жить 🖤", v: 5 }
+      ]
+    }
+  ];
+
+  var RESULTS = [
+    {
+      min: 10, max: 19,
+      emoji: "👟",
+      title: "комфорт прежде всего",
+      text: "комфорт прежде всего 👟\nи знаешь что — это твой выбор\nи ты его не стесняешься\nстиль бывает разным\nи удобный стиль тоже стиль\nно попробуй однажды добавить\nодну деталь которая сделает образ особенным —\nрезультат тебя удивит 🌸"
+    },
+    {
+      min: 20, max: 29,
+      emoji: "💃",
+      title: "трендовая душа",
+      text: "трендовая душа 💃\nты всегда в теме и это круто\nследишь за модой\nумеешь находить новинки\nно попробуй иногда выбирать вещи\nне потому что модно\nа потому что твоё —\nи откроешь совсем другой уровень 🌸"
+    },
+    {
+      min: 30, max: 38,
+      emoji: "💅",
+      title: "уверенная модница",
+      text: "уверенная модница 💅\nты знаешь что тебе идёт\nумеешь собирать образы\nи чувствуешь себя в них уверенно\nстиль для тебя это удовольствие\nа не обязанность —\nи это именно то что нужно 🌸"
+    },
+    {
+      min: 39, max: 45,
+      emoji: "🖤",
+      title: "тихая роскошь",
+      text: "тихая роскошь 🖤\nкачество вместо количества\nдетали вместо логотипов\nэлегантность вместо крика\nты из тех кто понимает —\nнастоящий стиль не нуждается\nв одобрении\nон просто есть 🖤"
+    },
+    {
+      min: 46, max: 50,
+      emoji: "👑",
+      title: "икона стиля",
+      text: "икона стиля 👑\nпоздравляю — ты родилась с вкусом\nобраз для тебя это искусство\nты замечаешь детали\nкоторые другие не видят\nдобро пожаловать в клуб\nгде стиль это не одежда\nа способ жить 🖤👑",
+      crown: true
+    }
+  ];
+
+  var TELEGRAM_LINK = "https://t.me/estetika_stolichnoy";
+  var APP_LINK = window.location.href;
+
+  var state = {
+    current: 0,
+    score: 0,
+    answers: [],
+    result: null
+  };
+
+  var screens = {
+    welcome: document.getElementById("screen-welcome"),
+    quiz: document.getElementById("screen-quiz"),
+    calc: document.getElementById("screen-calc"),
+    result: document.getElementById("screen-result")
+  };
+
+  function showScreen(name){
+    var current = document.querySelector(".screen.active");
+    var next = screens[name];
+    if(current === next) return;
+    if(current){
+      current.classList.remove("active");
+    }
+    next.classList.add("active");
+  }
+
+  function resetQuiz(){
+    state.current = 0;
+    state.score = 0;
+    state.answers = [];
+    state.result = null;
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    var idx = state.current;
+    var q = QUESTIONS[idx];
+    var total = QUESTIONS.length;
+
+    document.getElementById("progress-fill").style.width = ((idx) / total * 100) + "%";
+    document.getElementById("progress-label").textContent = (idx + 1) + "/" + total;
+    document.getElementById("q-number").textContent = "вопрос " + (idx + 1);
+    document.getElementById("q-text").textContent = q.text;
+
+    var letters = ["А", "Б", "В", "Г", "Д"];
+    var optionsWrap = document.getElementById("options");
+    optionsWrap.innerHTML = "";
+
+    q.options.forEach(function(opt, i){
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.innerHTML = '<span class="opt-letter">' + letters[i] + ')</span>' + escapeHtml(opt.t);
+      btn.addEventListener("click", function(){ selectOption(btn, opt); });
+      optionsWrap.appendChild(btn);
+    });
+  }
+
+  function escapeHtml(str){
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function selectOption(btn, opt){
+    var optionsWrap = document.getElementById("options");
+    var buttons = optionsWrap.querySelectorAll(".option");
+    buttons.forEach(function(b){ b.disabled = true; });
+    btn.classList.add("selected");
+
+    state.score += opt.v;
+    state.answers.push(opt.v);
+
+    document.getElementById("progress-fill").style.width = ((state.current + 1) / QUESTIONS.length * 100) + "%";
+
+    setTimeout(function(){
+      state.current++;
+      if(state.current < QUESTIONS.length){
+        renderQuestion();
+      } else {
+        startCalculating();
+      }
+    }, 500);
+  }
+
+  function startCalculating(){
+    showScreen("calc");
+    var el = document.getElementById("calc-number");
+    var target = state.score;
+    var duration = 1600;
+    var startTime = null;
+
+    function step(ts){
+      if(!startTime) startTime = ts;
+      var progress = Math.min((ts - startTime) / duration, 1);
+      var val = Math.floor(progress * target);
+      el.textContent = val;
+      if(progress < 1){
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target;
+      }
+    }
+    requestAnimationFrame(step);
+
+    setTimeout(function(){
+      showResult();
+    }, 2000);
+  }
+
+  function getResult(score){
+    for(var i = 0; i < RESULTS.length; i++){
+      if(score >= RESULTS[i].min && score <= RESULTS[i].max){
+        return RESULTS[i];
+      }
+    }
+    return RESULTS[RESULTS.length - 1];
+  }
+
+  function showResult(){
+    var r = getResult(state.score);
+    state.result = r;
+
+    var emojiEl = document.getElementById("result-emoji");
+    emojiEl.textContent = r.emoji;
+    emojiEl.className = "result-emoji" + (r.crown ? " crown" : "");
+
+    document.getElementById("result-title").textContent = r.title;
+    document.getElementById("result-text").textContent = r.text;
+    document.getElementById("result-score").textContent = state.score + " из 50 баллов";
+
+    showScreen("result");
+  }
+
+  function shareResult(){
+    var r = state.result || getResult(state.score);
+    var shareText = "я прошла тест модница или колхозница 🌸\nмоё звание: " + r.title + "\nузнай своё → " + APP_LINK + "\nот эстетики столичной жизни 👑";
+
+    if(navigator.share){
+      navigator.share({
+        title: "модница или колхозница?",
+        text: shareText
+      }).catch(function(){});
+    } else {
+      copyToClipboard(shareText);
+    }
+  }
+
+  function copyToClipboard(text){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+      showToast();
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(showToast).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function showToast(){
+    var toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(function(){
+      toast.classList.remove("show");
+    }, 2200);
+  }
+
+  document.getElementById("btn-start").addEventListener("click", function(){
+    resetQuiz();
+    showScreen("quiz");
+  });
+
+  document.getElementById("btn-share").addEventListener("click", shareResult);
+
+  document.getElementById("btn-restart").addEventListener("click", function(){
+    showScreen("welcome");
+  });
+
+  document.getElementById("btn-subscribe").addEventListener("click", function(){
+    window.open(TELEGRAM_LINK, "_blank");
+  });
+
+})();
+</script>
+
+</body>
+</html>
