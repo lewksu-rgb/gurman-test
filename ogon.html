@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>огонь или мимо? 🖤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --gold:#C9A84C;
+    --text:#ffffff;
+    --muted:#888888;
+    --fire-grad: linear-gradient(90deg, #ff4500, #ff6b00);
+    --radius:12px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    overscroll-behavior:none;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px 16px;
+  }
+
+  h1,h2,h3, .serif{
+    font-family:'Cormorant Garamond', serif;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    position:relative;
+    min-height:560px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .screen{
+    width:100%;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    animation:fadeIn 0.35s ease;
+  }
+
+  .screen.active{ display:flex; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- welcome ---------- */
+  .welcome-emoji{
+    font-size:52px;
+    margin-bottom:8px;
+  }
+
+  .welcome-title{
+    font-size:38px;
+    font-weight:700;
+    color:var(--gold);
+    line-height:1.15;
+    margin:0 0 18px;
+    text-transform:lowercase;
+    letter-spacing:0.5px;
+  }
+
+  .welcome-sub{
+    font-size:17px;
+    color:var(--text);
+    line-height:1.5;
+    margin:0 0 6px;
+  }
+
+  .welcome-meta{
+    font-size:15px;
+    color:var(--muted);
+    margin:0 0 36px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:var(--radius);
+    padding:16px 28px;
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    width:100%;
+    transition:transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+    text-transform:lowercase;
+  }
+
+  .btn:active{ transform:scale(0.97); }
+
+  .btn-fire{
+    background:var(--fire-grad);
+    color:#ffffff;
+  }
+
+  .btn-outline{
+    background:transparent;
+    color:var(--gold);
+    border:1.5px solid var(--gold);
+  }
+
+  .btn-outline:hover{
+    background:rgba(201,168,76,0.1);
+  }
+
+  .btn-stack{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+    margin-top:28px;
+  }
+
+  .footer-brand{
+    margin-top:32px;
+    font-size:12px;
+    color:#555;
+    letter-spacing:0.5px;
+  }
+
+  /* ---------- swipe screen ---------- */
+  .swipe-wrap{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .counter{
+    font-family:'Cormorant Garamond', serif;
+    font-size:20px;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  .card-stage{
+    position:relative;
+    width:100%;
+    max-width:340px;
+    height:440px;
+    margin-bottom:22px;
+  }
+
+  .card{
+    position:absolute;
+    inset:0;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 0 0 1px rgba(201,168,76,0.25), 0 20px 50px rgba(201,168,76,0.18);
+    background:#111;
+    cursor:grab;
+    touch-action:none;
+    will-change:transform;
+  }
+
+  .card:active{ cursor:grabbing; }
+
+  .card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    pointer-events:none;
+    -webkit-user-drag:none;
+  }
+
+  .card-label{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    padding:16px 18px;
+    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    text-align:left;
+    font-size:14px;
+    color:#fff;
+    letter-spacing:0.3px;
+  }
+
+  .stamp{
+    position:absolute;
+    top:24px;
+    font-family:'Cormorant Garamond', serif;
+    font-size:44px;
+    font-weight:700;
+    padding:6px 16px;
+    border-radius:10px;
+    border:3px solid;
+    opacity:0;
+    pointer-events:none;
+    text-transform:uppercase;
+  }
+
+  .stamp.fire{
+    left:20px;
+    color:#ff6b00;
+    border-color:#ff6b00;
+    transform:rotate(-15deg);
+  }
+
+  .stamp.mimo{
+    right:20px;
+    color:#999;
+    border-color:#999;
+    transform:rotate(15deg);
+  }
+
+  .vote-buttons{
+    display:flex;
+    gap:12px;
+    width:100%;
+    max-width:340px;
+  }
+
+  .vote-btn{
+    flex:1;
+    border:none;
+    border-radius:var(--radius);
+    padding:16px 10px;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform 0.15s ease;
+  }
+
+  .vote-btn:active{ transform:scale(0.95); }
+
+  .vote-fire{
+    background:var(--fire-grad);
+    color:#ffffff;
+  }
+
+  .vote-mimo{
+    background:#1a1a1a;
+    border:1.5px solid #333;
+    color:#ffffff;
+  }
+
+  /* ---------- calculating ---------- */
+  .calc-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+  }
+
+  .calc-text{
+    font-size:17px;
+    color:var(--muted);
+  }
+
+  .spinner{
+    width:34px;
+    height:34px;
+    border:3px solid #222;
+    border-top-color:var(--gold);
+    border-radius:50%;
+    animation:spin 0.9s linear infinite;
+  }
+
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- result ---------- */
+  .result-wrap{
+    animation:resultPop 0.5s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  @keyframes resultPop{
+    from{ opacity:0; transform:scale(0.85); }
+    to{ opacity:1; transform:scale(1); }
+  }
+
+  .result-emoji{
+    font-size:80px;
+    margin-bottom:8px;
+    display:inline-block;
+  }
+
+  .result-emoji.win{
+    animation:shine 1.8s ease-in-out infinite;
+  }
+
+  @keyframes shine{
+    0%, 100%{ filter:drop-shadow(0 0 6px rgba(201,168,76,0.4)); transform:scale(1) rotate(-2deg); }
+    50%{ filter:drop-shadow(0 0 22px rgba(201,168,76,0.9)); transform:scale(1.08) rotate(2deg); }
+  }
+
+  .result-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:30px;
+    font-weight:700;
+    color:var(--gold);
+    margin:6px 0 18px;
+    text-transform:lowercase;
+  }
+
+  .result-text{
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text);
+    white-space:pre-line;
+    margin-bottom:8px;
+  }
+
+  .result-score{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:30px;
+    letter-spacing:0.5px;
+  }
+
+  .toast{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--gold);
+    color:#0a0a0a;
+    padding:12px 20px;
+    border-radius:var(--radius);
+    font-size:14px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:60;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .confetti{
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:40;
+  }
+
+  .confetti-piece{
+    position:absolute;
+    top:-20px;
+    width:8px;
+    height:14px;
+    background:var(--gold);
+    opacity:0.9;
+    animation:confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall{
+    to{
+      transform:translateY(110vh) rotate(600deg);
+      opacity:0.2;
+    }
+  }
+
+  @media (max-width:360px){
+    .welcome-title{ font-size:30px; }
+    .card-stage{ height:380px; }
+    .result-emoji{ font-size:62px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+  <section class="screen active" id="screen-welcome">
+    <div class="welcome-emoji">🖤</div>
+    <h1 class="welcome-title">огонь или мимо? 🖤</h1>
+    <p class="welcome-sub">оцени образы —</p>
+    <p class="welcome-sub">узнай какой у тебя вкус</p>
+    <p class="welcome-meta">от girl of your dream</p>
+    <button class="btn btn-fire" id="btn-start">начать 🔥</button>
+    <div class="footer-brand">girl of your dream</div>
+  </section>
+
+  <!-- ЭКРАН 2: ГОЛОСОВАНИЕ -->
+  <section class="screen" id="screen-swipe">
+    <div class="swipe-wrap">
+      <div class="counter" id="counter">1/10</div>
+      <div class="card-stage" id="card-stage"></div>
+      <div class="vote-buttons">
+        <button class="vote-btn vote-fire" id="btn-fire">🔥 огонь</button>
+        <button class="vote-btn vote-mimo" id="btn-mimo">❌ мимо</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3: ПОДСЧЁТ -->
+  <section class="screen" id="screen-calc">
+    <div class="calc-wrap">
+      <div class="spinner"></div>
+      <div class="calc-text">определяем твой вкус... 🖤</div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 4: РЕЗУЛЬТАТ -->
+  <section class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="result-emoji" id="result-emoji"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-text" id="result-text"></p>
+      <p class="result-score" id="result-score"></p>
+    </div>
+    <div class="btn-stack">
+      <button class="btn btn-fire" id="btn-share">поделиться результатом 🖤</button>
+      <button class="btn btn-outline" id="btn-restart">пройти ещё раз 🔥</button>
+      <button class="btn btn-outline" id="btn-subscribe">эстетика столичной жизни 🖤</button>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">скопировано в буфер обмена 🖤</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LOOK_POOLS = [
+    [
+      { url: "https://images.unsplash.com/photo-1634826260499-7d97a6049913?auto=format&fit=crop&w=800&q=80", label: "total black look" },
+      { url: "https://images.unsplash.com/photo-1643616964756-7e2822e38ee9?auto=format&fit=crop&w=800&q=80", label: "total black look" },
+      { url: "https://images.unsplash.com/photo-1636342354114-9df147d2cd3f?auto=format&fit=crop&w=800&q=80", label: "total black look" },
+      { url: "https://images.unsplash.com/photo-1707586033127-d9f7c512b445?auto=format&fit=crop&w=800&q=80", label: "total black look" }
+    ],
+    [
+      { url: "https://images.unsplash.com/photo-1617019114583-affb34d1b3cd?auto=format&fit=crop&w=800&q=80", label: "total white look" },
+      { url: "https://images.unsplash.com/photo-1685374803546-24488c5ff529?auto=format&fit=crop&w=800&q=80", label: "total white look" },
+      { url: "https://images.unsplash.com/photo-1745834311176-1b4fe34a5e49?auto=format&fit=crop&w=800&q=80", label: "total white look" },
+      { url: "https://images.unsplash.com/photo-1773859095114-6074af8f66f5?auto=format&fit=crop&w=800&q=80", label: "total white look" }
+    ],
+    [
+      { url: "https://images.unsplash.com/photo-1637248666370-70a4a603c23e?auto=format&fit=crop&w=800&q=80", label: "бежевый образ" },
+      { url: "https://images.unsplash.com/photo-1622018168951-9381b60507b2?auto=format&fit=crop&w=800&q=80", label: "кремовый образ" },
+      { url: "https://images.unsplash.com/photo-1730838199493-19d469f7ee62?auto=format&fit=crop&w=800&q=80", label: "бежевый образ" },
+      { url: "https://images.unsplash.com/photo-1651607953340-43e51ec9a39c?auto=format&fit=crop&w=800&q=80", label: "кремовый образ" }
+    ],
+    [
+      { url: "https://images.unsplash.com/photo-1589212987511-4a924cb9d8ac?auto=format&fit=crop&w=800&q=80", label: "вечернее платье" },
+      { url: "https://images.unsplash.com/photo-1559034750-cdab70a66b8e?auto=format&fit=crop&w=800&q=80", label: "вечернее платье" },
+      { url: "https://images.unsplash.com/photo-1764265554883-9804fe44f330?auto=format&fit=crop&w=800&q=80", label: "вечернее платье" },
+      { url: "https://images.unsplash.com/photo-1779762897076-da3ca8b62a6a?auto=format&fit=crop&w=800&q=80", label: "вечернее платье" }
+    ],
+    [
+      { url: "https://images.unsplash.com/photo-1554325109-87755d48a3fb?auto=format&fit=crop&w=800&q=80", label: "деловой элегантный образ" },
+      { url: "https://images.unsplash.com/photo-1604914509335-9001944f23d5?auto=format&fit=crop&w=800&q=80", label: "деловой элегантный образ" },
+      { url: "https://images.unsplash.com/photo-1763444134734-166e349dcba8?auto=format&fit=crop&w=800&q=80", label: "деловой элегантный образ" },
+      { url: "https://images.unsplash.com/photo-1762341124796-530c0085f7d8?auto=format&fit=crop&w=800&q=80", label: "деловой элегантный образ" }
+    ]
+  ];
+
+  var RESULTS = [
+    {
+      min: 0, max: 3,
+      emoji: "🤍",
+      title: "свой стиль",
+      text: "у тебя очень избирательный вкус 🤍\nмассовые тренды — не твоё\nты знаешь чего хочешь\nи не размениваешься\nэто называется характер 🖤"
+    },
+    {
+      min: 4, max: 6,
+      emoji: "💫",
+      title: "эклектичная душа",
+      text: "твой вкус — микс из всего лучшего 💫\nты не привязана к одному стилю\nберёшь лучшее отовсюду\nи создаёшь своё —\nэто и есть настоящий стиль 🖤"
+    },
+    {
+      min: 7, max: 9,
+      emoji: "🖤",
+      title: "тихая роскошь",
+      text: "ты чувствуешь элегантность 🖤\nкачество, детали, правильный силуэт —\nвсё это резонирует с тобой\ngirl of your dream одобряет 👑"
+    },
+    {
+      min: 10, max: 10,
+      emoji: "👑",
+      title: "икона стиля",
+      text: "десять из десяти — 👑\nу нас одинаковый вкус\nа значит ты точно знаешь\nкак жить красиво 🖤\nдобро пожаловать в клуб\ngirl of your dream 👑",
+      win: true
+    }
+  ];
+
+  var TELEGRAM_LINK = "https://t.me/girl_ofyour_dream";
+  var APP_LINK = window.location.href;
+
+  var state = {
+    looks: [],
+    current: 0,
+    fires: 0,
+    result: null,
+    dragging: false,
+    startX: 0,
+    startY: 0,
+    dx: 0,
+    dy: 0,
+    locked: false
+  };
+
+  var screens = {
+    welcome: document.getElementById("screen-welcome"),
+    swipe: document.getElementById("screen-swipe"),
+    calc: document.getElementById("screen-calc"),
+    result: document.getElementById("screen-result")
+  };
+
+  var stage = document.getElementById("card-stage");
+  var counterEl = document.getElementById("counter");
+
+  function showScreen(name){
+    var current = document.querySelector(".screen.active");
+    var next = screens[name];
+    if(current === next) return;
+    if(current){
+      current.classList.remove("active");
+    }
+    next.classList.add("active");
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function pickLooks(){
+    var picked = [];
+    LOOK_POOLS.forEach(function(pool){
+      var shuffledPool = shuffle(pool);
+      picked.push(shuffledPool[0]);
+      picked.push(shuffledPool[1]);
+    });
+    return shuffle(picked);
+  }
+
+  function resetQuiz(){
+    state.looks = pickLooks();
+    state.current = 0;
+    state.fires = 0;
+    state.result = null;
+    renderCard();
+  }
+
+  function renderCard(){
+    var total = state.looks.length;
+    counterEl.textContent = (state.current + 1) + "/" + total;
+
+    var look = state.looks[state.current];
+
+    stage.innerHTML = "";
+    var card = document.createElement("div");
+    card.className = "card";
+    card.id = "active-card";
+
+    var img = document.createElement("img");
+    img.src = look.url;
+    img.alt = look.label;
+    card.appendChild(img);
+
+    var labelEl = document.createElement("div");
+    labelEl.className = "card-label";
+    labelEl.textContent = look.label;
+    card.appendChild(labelEl);
+
+    var fireStamp = document.createElement("div");
+    fireStamp.className = "stamp fire";
+    fireStamp.textContent = "огонь";
+    card.appendChild(fireStamp);
+
+    var mimoStamp = document.createElement("div");
+    mimoStamp.className = "stamp mimo";
+    mimoStamp.textContent = "мимо";
+    card.appendChild(mimoStamp);
+
+    stage.appendChild(card);
+
+    state.locked = false;
+    bindDrag(card, fireStamp, mimoStamp);
+  }
+
+  function bindDrag(card, fireStamp, mimoStamp){
+    var dragging = false;
+    var startX = 0, startY = 0;
+
+    function onDown(e){
+      if(state.locked) return;
+      dragging = true;
+      card.style.transition = "none";
+      var point = e.touches ? e.touches[0] : e;
+      startX = point.clientX;
+      startY = point.clientY;
+    }
+
+    function onMove(e){
+      if(!dragging || state.locked) return;
+      var point = e.touches ? e.touches[0] : e;
+      var dx = point.clientX - startX;
+      var dy = point.clientY - startY;
+      card.style.transform = "translate(" + dx + "px, " + (dy * 0.15) + "px) rotate(" + (dx / 18) + "deg)";
+      fireStamp.style.opacity = Math.max(0, Math.min(1, dx / 100));
+      mimoStamp.style.opacity = Math.max(0, Math.min(1, -dx / 100));
+      if(e.cancelable) e.preventDefault();
+    }
+
+    function onUp(e){
+      if(!dragging || state.locked) return;
+      dragging = false;
+      var point = e.changedTouches ? e.changedTouches[0] : e;
+      var dx = point.clientX - startX;
+
+      if(dx > 90){
+        vote("fire", card, fireStamp, mimoStamp);
+      } else if(dx < -90){
+        vote("mimo", card, fireStamp, mimoStamp);
+      } else {
+        card.style.transition = "transform 0.3s ease";
+        card.style.transform = "translate(0,0) rotate(0)";
+        fireStamp.style.opacity = 0;
+        mimoStamp.style.opacity = 0;
+      }
+    }
+
+    card.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+
+    card.addEventListener("touchstart", onDown, { passive: true });
+    card.addEventListener("touchmove", onMove, { passive: false });
+    card.addEventListener("touchend", onUp);
+  }
+
+  function vote(type, card, fireStamp, mimoStamp){
+    if(state.locked) return;
+    state.locked = true;
+
+    card.style.transition = "transform 0.45s ease, filter 0.45s ease";
+
+    if(type === "fire"){
+      state.fires++;
+      card.style.transform = "translate(160%, -40px) rotate(24deg)";
+      fireStamp.style.opacity = 1;
+    } else {
+      card.style.transform = "translate(-160%, 40px) rotate(-24deg)";
+      card.style.filter = "grayscale(1)";
+      mimoStamp.style.opacity = 1;
+    }
+
+    setTimeout(function(){
+      state.current++;
+      if(state.current < state.looks.length){
+        renderCard();
+      } else {
+        startCalculating();
+      }
+    }, 420);
+  }
+
+  function startCalculating(){
+    showScreen("calc");
+    setTimeout(function(){
+      showResult();
+    }, 1600);
+  }
+
+  function getResult(score){
+    for(var i = 0; i < RESULTS.length; i++){
+      if(score >= RESULTS[i].min && score <= RESULTS[i].max){
+        return RESULTS[i];
+      }
+    }
+    return RESULTS[RESULTS.length - 1];
+  }
+
+  function showResult(){
+    var r = getResult(state.fires);
+    state.result = r;
+
+    var emojiEl = document.getElementById("result-emoji");
+    emojiEl.textContent = r.emoji;
+    emojiEl.className = "result-emoji" + (r.win ? " win" : "");
+
+    document.getElementById("result-title").textContent = r.title;
+    document.getElementById("result-text").textContent = r.text;
+    document.getElementById("result-score").textContent = state.fires + " 🔥 из " + state.looks.length;
+
+    showScreen("result");
+
+    if(r.win){
+      launchConfetti();
+    }
+  }
+
+  function launchConfetti(){
+    var wrap = document.createElement("div");
+    wrap.className = "confetti";
+    document.body.appendChild(wrap);
+
+    var colors = ["#C9A84C", "#f2d98a", "#ffffff"];
+    for(var i = 0; i < 60; i++){
+      var piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      piece.style.left = (Math.random() * 100) + "%";
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = (2.5 + Math.random() * 2) + "s";
+      piece.style.animationDelay = (Math.random() * 0.6) + "s";
+      wrap.appendChild(piece);
+    }
+
+    setTimeout(function(){
+      wrap.remove();
+    }, 5000);
+  }
+
+  function shareResult(){
+    var r = state.result || getResult(state.fires);
+    var shareText = "я прошла рейтинг образов 🖤\nмоё звание: " + r.title + "\nпроверь свой вкус → " + APP_LINK + "\n@girl_ofyour_dream";
+
+    if(navigator.share){
+      navigator.share({
+        title: "огонь или мимо?",
+        text: shareText
+      }).catch(function(){});
+    } else {
+      copyToClipboard(shareText);
+    }
+  }
+
+  function copyToClipboard(text){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+      showToast();
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(showToast).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function showToast(){
+    var toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(function(){
+      toast.classList.remove("show");
+    }, 2200);
+  }
+
+  document.getElementById("btn-start").addEventListener("click", function(){
+    resetQuiz();
+    showScreen("swipe");
+  });
+
+  document.getElementById("btn-fire").addEventListener("click", function(){
+    var card = document.getElementById("active-card");
+    if(!card) return;
+    vote("fire", card, card.querySelector(".stamp.fire"), card.querySelector(".stamp.mimo"));
+  });
+
+  document.getElementById("btn-mimo").addEventListener("click", function(){
+    var card = document.getElementById("active-card");
+    if(!card) return;
+    vote("mimo", card, card.querySelector(".stamp.fire"), card.querySelector(".stamp.mimo"));
+  });
+
+  document.getElementById("btn-share").addEventListener("click", shareResult);
+
+  document.getElementById("btn-restart").addEventListener("click", function(){
+    showScreen("welcome");
+  });
+
+  document.getElementById("btn-subscribe").addEventListener("click", function(){
+    window.open(TELEGRAM_LINK, "_blank");
+  });
+
+})();
+</script>
+
+</body>
+</html>
