@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>жертва ты или абьюзер? 🖤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0000;
+    --card-bg:#1a0505;
+    --dark-red:#8B0000;
+    --red:#C41E3A;
+    --grad: linear-gradient(90deg, var(--dark-red), var(--red), var(--dark-red));
+    --text:#ffffff;
+    --muted:#d4a0a0;
+    --opt-bg:#1f0808;
+    --opt-border:#4a1010;
+    --opt-hover:#2a0f0f;
+    --opt-selected-bg:#2a0808;
+    --radius:12px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px 16px;
+  }
+
+  h1,h2,h3, .serif{
+    font-family:'Cormorant Garamond', serif;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    position:relative;
+    min-height:560px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .screen{
+    width:100%;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    animation:fadeIn 0.35s ease;
+  }
+
+  .screen.active{ display:flex; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- welcome ---------- */
+  .welcome-emoji{
+    font-size:52px;
+    margin-bottom:8px;
+  }
+
+  .welcome-title{
+    font-size:36px;
+    font-weight:700;
+    background:var(--grad);
+    background-size:200% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1.15;
+    margin:0 0 18px;
+    text-transform:lowercase;
+    letter-spacing:0.5px;
+    animation:titleFlicker 3s ease-in-out infinite;
+  }
+
+  @keyframes titleFlicker{
+    0%, 100%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+  }
+
+  .welcome-sub{
+    font-size:17px;
+    color:var(--text);
+    line-height:1.5;
+    margin:0 0 6px;
+  }
+
+  .welcome-meta{
+    font-size:15px;
+    color:var(--muted);
+    margin:0 0 36px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:var(--radius);
+    padding:16px 28px;
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    width:100%;
+    transition:transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+    text-transform:lowercase;
+  }
+
+  .btn:active{ transform:scale(0.97); }
+
+  .btn-grad{
+    background:linear-gradient(90deg, var(--dark-red), var(--red), var(--dark-red));
+    background-size:200% 100%;
+    color:#ffffff;
+    position:relative;
+    overflow:hidden;
+    animation:btnShimmer 3.5s ease-in-out infinite;
+  }
+
+  .btn-grad::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-60%;
+    width:40%;
+    height:100%;
+    background:linear-gradient(115deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform:skewX(-20deg);
+    animation:btnSweep 3.5s ease-in-out infinite;
+  }
+
+  @keyframes btnShimmer{
+    0%, 100%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+  }
+
+  @keyframes btnSweep{
+    0%{ left:-60%; }
+    35%{ left:130%; }
+    100%{ left:130%; }
+  }
+
+  .btn-outline{
+    background:transparent;
+    color:var(--red);
+    border:1.5px solid var(--red);
+  }
+
+  .btn-outline:hover{
+    background:rgba(196,30,58,0.1);
+  }
+
+  .btn-stack{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+    margin-top:28px;
+  }
+
+  /* ---------- quiz ---------- */
+  .quiz-wrap{
+    width:100%;
+  }
+
+  .progress-track{
+    width:100%;
+    height:6px;
+    background:#2a0f0f;
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--dark-red), var(--red));
+    border-radius:999px;
+    width:0%;
+    transition:width 0.4s ease;
+  }
+
+  .progress-label{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:24px;
+    letter-spacing:0.5px;
+  }
+
+  .q-number{
+    font-family:'Cormorant Garamond', serif;
+    font-size:21px;
+    color:var(--red);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+
+  .q-text{
+    font-size:22px;
+    font-weight:600;
+    line-height:1.35;
+    margin-bottom:24px;
+    text-align:left;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+  }
+
+  .option{
+    background:var(--opt-bg);
+    color:var(--text);
+    border:1.5px solid var(--opt-border);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    text-align:left;
+    line-height:1.4;
+    cursor:pointer;
+    transition:background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+
+  .option:hover{
+    background:var(--opt-hover);
+  }
+
+  .option:active{
+    transform:scale(0.98);
+  }
+
+  .option.selected{
+    border-color:var(--red);
+    color:var(--red);
+    background:var(--opt-selected-bg);
+  }
+
+  .option:disabled{
+    cursor:default;
+  }
+
+  .option .opt-letter{
+    color:var(--red);
+    font-weight:700;
+    margin-right:8px;
+  }
+
+  /* ---------- calculating ---------- */
+  .calc-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+  }
+
+  .calc-number{
+    font-family:'Cormorant Garamond', serif;
+    font-size:80px;
+    font-weight:700;
+    background:linear-gradient(90deg, var(--dark-red), var(--red));
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1;
+  }
+
+  .calc-text{
+    font-size:17px;
+    color:var(--muted);
+  }
+
+  .spinner{
+    width:34px;
+    height:34px;
+    border:3px solid #2a0f0f;
+    border-top-color:var(--red);
+    border-radius:50%;
+    animation:spin 0.9s linear infinite;
+  }
+
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- result ---------- */
+  .result-wrap{
+    animation:resultPop 0.5s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  @keyframes resultPop{
+    from{ opacity:0; transform:scale(0.85); }
+    to{ opacity:1; transform:scale(1); }
+  }
+
+  .result-emoji{
+    font-size:80px;
+    margin-bottom:8px;
+    display:inline-block;
+  }
+
+  .result-emoji.crown{
+    position:relative;
+    display:inline-block;
+    animation:shine 1.8s ease-in-out infinite;
+  }
+
+  .result-emoji.crown::before,
+  .result-emoji.crown::after{
+    content:"✨";
+    position:absolute;
+    font-size:22px;
+    opacity:0;
+    animation:twinkle 1.8s ease-in-out infinite;
+  }
+
+  .result-emoji.crown::before{
+    top:-8px;
+    left:-22px;
+    animation-delay:0.3s;
+  }
+
+  .result-emoji.crown::after{
+    bottom:0px;
+    right:-24px;
+    font-size:18px;
+    animation-delay:0.9s;
+  }
+
+  @keyframes shine{
+    0%{ filter:drop-shadow(0 0 8px rgba(196,30,58,0.7)) drop-shadow(0 0 2px rgba(139,0,0,0.6)); transform:scale(1) rotate(-2deg); }
+    50%{ filter:drop-shadow(0 0 22px rgba(196,30,58,0.95)) drop-shadow(0 0 36px rgba(139,0,0,0.8)); transform:scale(1.1) rotate(2deg); }
+    100%{ filter:drop-shadow(0 0 8px rgba(196,30,58,0.7)) drop-shadow(0 0 2px rgba(139,0,0,0.6)); transform:scale(1) rotate(-2deg); }
+  }
+
+  @keyframes twinkle{
+    0%, 100%{ opacity:0; transform:scale(0.4) rotate(0deg); }
+    50%{ opacity:1; transform:scale(1.15) rotate(20deg); }
+  }
+
+  .result-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:30px;
+    font-weight:700;
+    background:linear-gradient(90deg, var(--dark-red), var(--red));
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin:6px 0 18px;
+    text-transform:lowercase;
+  }
+
+  .result-text{
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text);
+    white-space:pre-line;
+    margin-bottom:8px;
+  }
+
+  .result-score{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:30px;
+    letter-spacing:0.5px;
+  }
+
+  .toast{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(90deg, var(--dark-red), var(--red));
+    color:#ffffff;
+    padding:12px 20px;
+    border-radius:var(--radius);
+    font-size:14px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:50;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .footer-brand{
+    margin-top:32px;
+    font-size:12px;
+    color:#5a2020;
+    letter-spacing:0.5px;
+  }
+
+  @media (max-width:360px){
+    .welcome-title{ font-size:28px; }
+    .q-text{ font-size:19px; }
+    .calc-number{ font-size:62px; }
+    .result-emoji{ font-size:62px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+  <section class="screen active" id="screen-welcome">
+    <div class="welcome-emoji">🖤</div>
+    <h1 class="welcome-title">жертва ты или абьюзер? 🖤</h1>
+    <p class="welcome-sub">честный тест про характер в отношениях</p>
+    <p class="welcome-sub">от эстетики столичной жизни</p>
+    <p class="welcome-meta">7 вопросов которые всё расскажут<br>(спойлер: результат тебя удивит 😄)</p>
+    <button class="btn btn-grad" id="btn-start">узнать правду</button>
+    <div class="footer-brand">эстетика столичной жизни</div>
+  </section>
+
+  <!-- ЭКРАН 2: ВОПРОСЫ -->
+  <section class="screen" id="screen-quiz">
+    <div class="quiz-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">1/7</div>
+      <div class="q-number" id="q-number">вопрос 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3: ПОДСЧЁТ -->
+  <section class="screen" id="screen-calc">
+    <div class="calc-wrap">
+      <div class="spinner"></div>
+      <div class="calc-number" id="calc-number">0</div>
+      <div class="calc-text">анализируем твой характер... 🖤</div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 4: РЕЗУЛЬТАТ -->
+  <section class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="result-emoji" id="result-emoji"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-text" id="result-text"></p>
+      <p class="result-score" id="result-score"></p>
+    </div>
+    <div class="btn-stack">
+      <button class="btn btn-grad" id="btn-share">поделиться с подругой 🖤</button>
+      <button class="btn btn-outline" id="btn-restart">пройти ещё раз</button>
+      <button class="btn btn-outline" id="btn-subscribe">эстетика столичной жизни 🖤</button>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">скопировано в буфер обмена 🖤</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var QUESTIONS = [
+    {
+      text: "партнёр опоздал на час без предупреждения. ты:",
+      options: [
+        { t: "расстроилась, но промолчала — не хочу скандала", v: 1 },
+        { t: "написала 47 сообщений, пока он не ответил", v: 2 },
+        { t: "сделала вид, что всё хорошо — но запомнила", v: 3 },
+        { t: "объявила, что вечер испорчен, и ушла домой", v: 4 }
+      ]
+    },
+    {
+      text: "вы поспорили. оказалось, ты была неправа. ты:",
+      options: [
+        { t: "извинилась — ну, бывает", v: 1 },
+        { t: "нашла способ всё равно оказаться правой", v: 2 },
+        { t: "извинилась, но потом неделю напоминала, как старалась", v: 3 },
+        { t: "сделала такое лицо, что он сам извинился", v: 4 }
+      ]
+    },
+    {
+      text: "он не написал весь день. ты:",
+      options: [
+        { t: "решила, что случилось что-то страшное", v: 1 },
+        { t: "написала сама — всё нормально", v: 2 },
+        { t: "не писала — пусть сам напишет", v: 3 },
+        { t: "написала его маме уточнить, живой ли он 😄", v: 4 }
+      ]
+    },
+    {
+      text: "на вечеринке он поговорил с другой девушкой. ты:",
+      options: [
+        { t: "сделала вид, что не заметила — но заметила", v: 1 },
+        { t: "подошла познакомиться — держи друзей близко", v: 2 },
+        { t: "молча надела пальто и вышла", v: 3 },
+        { t: "устроила сцену прямо там — пусть все знают", v: 4 }
+      ]
+    },
+    {
+      text: "друзья говорят, что ты слишком много терпишь. ты:",
+      options: [
+        { t: "да, наверное, они правы", v: 1 },
+        { t: "они просто не понимают наших отношений", v: 2 },
+        { t: "терплю? я просто мудрая", v: 3 },
+        { t: "кто из нас терпит — ещё вопрос 😄", v: 4 }
+      ]
+    },
+    {
+      text: "он забыл о важной для тебя дате. ты:",
+      options: [
+        { t: "расстроилась, но не сказала — зачем портить настроение", v: 1 },
+        { t: "напомнила — люди забывают, это нормально", v: 2 },
+        { t: "не сказала ничего, но создала атмосферу", v: 3 },
+        { t: "начала вспоминать всё, что он когда-либо забывал", v: 4 }
+      ]
+    },
+    {
+      text: "как заканчиваются ваши ссоры:",
+      options: [
+        { t: "я извиняюсь, даже когда не виновата", v: 1 },
+        { t: "миримся и всё — жизнь продолжается", v: 2 },
+        { t: "он извиняется — я великодушно прощаю", v: 3 },
+        { t: "какие ссоры — у нас перманентная война 😄", v: 4 }
+      ]
+    }
+  ];
+
+  var RESULTS = [
+    {
+      min: 7, max: 10,
+      emoji: "😇",
+      title: "жертва обстоятельств",
+      text: "жертва обстоятельств 😇\nты терпишь, молчишь и улыбаешься\nдаже когда внутри всё кипит\nмилая, иногда можно и сказать вслух\nобещаем — мир не рухнет 🖤\nа отношения станут честнее"
+    },
+    {
+      min: 11, max: 14,
+      emoji: "🎭",
+      title: "актриса своего театра",
+      text: "актриса своего театра 🎭\nты не скандалишь — ты создаёшь атмосферу\nне молчишь — ты многозначительно паузируешь\nпартнёр никогда не знает что ты думаешь\nно всегда чувствует что что-то не так\nоскар за лучшую женскую роль — твой 🖤"
+    },
+    {
+      min: 15, max: 18,
+      emoji: "🌊",
+      title: "тихий омут",
+      text: "тихий омут 🌊\nснаружи — спокойствие и элегантность\nвнутри — всё помнишь, всё считаешь, всё знаешь\nс тобой лучше не ссориться\nпотому что ты не забываешь\nникогда 🖤"
+    },
+    {
+      min: 19, max: 22,
+      emoji: "😇",
+      title: "ангел в овечьей шкуре",
+      text: "ангел в овечьей шкуре 😇\nмилая улыбка, добрые глаза\nи абсолютно железная воля\nты не давишь — ты вдохновляешь\nделать всё по-твоему\nи все вокруг думают что это их идея\nбраво 🖤"
+    },
+    {
+      min: 23, max: 28,
+      emoji: "👑",
+      title: "королева драмы",
+      text: "королева драмы 👑\nжизнь с тобой — это сериал\nс неожиданными поворотами\nсценами и монологами\nскучно не бывает никогда\nпартнёр выжат но счастлив —\nс тобой хотя бы не скучно 🖤\nцарствуй, королева 👑",
+      crown: true
+    }
+  ];
+
+  var TELEGRAM_LINK = "https://t.me/girl_ofyour_dream";
+  var APP_LINK = window.location.href;
+
+  var state = {
+    current: 0,
+    score: 0,
+    answers: [],
+    result: null
+  };
+
+  var screens = {
+    welcome: document.getElementById("screen-welcome"),
+    quiz: document.getElementById("screen-quiz"),
+    calc: document.getElementById("screen-calc"),
+    result: document.getElementById("screen-result")
+  };
+
+  function showScreen(name){
+    var current = document.querySelector(".screen.active");
+    var next = screens[name];
+    if(current === next) return;
+    if(current){
+      current.classList.remove("active");
+    }
+    next.classList.add("active");
+  }
+
+  function resetQuiz(){
+    state.current = 0;
+    state.score = 0;
+    state.answers = [];
+    state.result = null;
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    var idx = state.current;
+    var q = QUESTIONS[idx];
+    var total = QUESTIONS.length;
+
+    document.getElementById("progress-fill").style.width = ((idx) / total * 100) + "%";
+    document.getElementById("progress-label").textContent = (idx + 1) + "/" + total;
+    document.getElementById("q-number").textContent = "вопрос " + (idx + 1);
+    document.getElementById("q-text").textContent = q.text;
+
+    var letters = ["А", "Б", "В", "Г"];
+    var optionsWrap = document.getElementById("options");
+    optionsWrap.innerHTML = "";
+
+    q.options.forEach(function(opt, i){
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.innerHTML = '<span class="opt-letter">' + letters[i] + ')</span>' + escapeHtml(opt.t);
+      btn.addEventListener("click", function(){ selectOption(btn, opt); });
+      optionsWrap.appendChild(btn);
+    });
+  }
+
+  function escapeHtml(str){
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function selectOption(btn, opt){
+    var optionsWrap = document.getElementById("options");
+    var buttons = optionsWrap.querySelectorAll(".option");
+    buttons.forEach(function(b){ b.disabled = true; });
+    btn.classList.add("selected");
+
+    state.score += opt.v;
+    state.answers.push(opt.v);
+
+    document.getElementById("progress-fill").style.width = ((state.current + 1) / QUESTIONS.length * 100) + "%";
+
+    setTimeout(function(){
+      state.current++;
+      if(state.current < QUESTIONS.length){
+        renderQuestion();
+      } else {
+        startCalculating();
+      }
+    }, 500);
+  }
+
+  function startCalculating(){
+    showScreen("calc");
+    var el = document.getElementById("calc-number");
+    var target = state.score;
+    var duration = 1600;
+    var startTime = null;
+
+    function step(ts){
+      if(!startTime) startTime = ts;
+      var progress = Math.min((ts - startTime) / duration, 1);
+      var val = Math.floor(progress * target);
+      el.textContent = val;
+      if(progress < 1){
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target;
+      }
+    }
+    requestAnimationFrame(step);
+
+    setTimeout(function(){
+      showResult();
+    }, 2000);
+  }
+
+  function getResult(score){
+    for(var i = 0; i < RESULTS.length; i++){
+      if(score >= RESULTS[i].min && score <= RESULTS[i].max){
+        return RESULTS[i];
+      }
+    }
+    return RESULTS[RESULTS.length - 1];
+  }
+
+  function showResult(){
+    var r = getResult(state.score);
+    state.result = r;
+
+    var emojiEl = document.getElementById("result-emoji");
+    emojiEl.textContent = r.emoji;
+    emojiEl.className = "result-emoji" + (r.crown ? " crown" : "");
+
+    document.getElementById("result-title").textContent = r.title;
+    document.getElementById("result-text").textContent = r.text;
+    document.getElementById("result-score").textContent = state.score + " из 28 баллов";
+
+    showScreen("result");
+  }
+
+  function shareResult(){
+    var r = state.result || getResult(state.score);
+    var shareText = "я прошла тест — жертва я или абьюзер 😄🖤\nмоё звание: " + r.title + "\nузнай своё → " + APP_LINK + "\nот эстетики столичной жизни 👑";
+
+    if(navigator.share){
+      navigator.share({
+        title: "жертва ты или абьюзер?",
+        text: shareText
+      }).catch(function(){});
+    } else {
+      copyToClipboard(shareText);
+    }
+  }
+
+  function copyToClipboard(text){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+      showToast();
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(showToast).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function showToast(){
+    var toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(function(){
+      toast.classList.remove("show");
+    }, 2200);
+  }
+
+  document.getElementById("btn-start").addEventListener("click", function(){
+    resetQuiz();
+    showScreen("quiz");
+  });
+
+  document.getElementById("btn-share").addEventListener("click", shareResult);
+
+  document.getElementById("btn-restart").addEventListener("click", function(){
+    showScreen("welcome");
+  });
+
+  document.getElementById("btn-subscribe").addEventListener("click", function(){
+    window.open(TELEGRAM_LINK, "_blank");
+  });
+
+})();
+</script>
+
+</body>
+</html>
