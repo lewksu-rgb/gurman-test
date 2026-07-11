@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>доверься случаю 🖤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080810;
+    --gold:#C9A84C;
+    --purple:#9B59B6;
+    --grad: linear-gradient(135deg, var(--purple), var(--gold));
+    --text:#ffffff;
+    --muted:#888888;
+    --card-bg:#1a1a2e;
+    --radius:12px;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px 16px;
+    position:relative;
+  }
+
+  h1,h2,h3, .serif{
+    font-family:'Cormorant Garamond', serif;
+  }
+
+  .bg-particles{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .bg-dot{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:var(--gold);
+    opacity:0.5;
+    animation:floatUp linear infinite;
+  }
+
+  @keyframes floatUp{
+    from{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:0.6; }
+    90%{ opacity:0.5; }
+    to{ transform:translateY(-110vh) translateX(20px); opacity:0; }
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    position:relative;
+    z-index:1;
+    min-height:560px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .screen{
+    width:100%;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    animation:fadeIn 0.35s ease;
+  }
+
+  .screen.active{ display:flex; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- welcome ---------- */
+  .welcome-title{
+    font-size:38px;
+    font-weight:700;
+    background:var(--grad);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1.2;
+    margin:0 0 20px;
+    text-transform:lowercase;
+    letter-spacing:0.5px;
+  }
+
+  .welcome-sub{
+    font-size:16.5px;
+    color:var(--muted);
+    line-height:1.7;
+    margin:0 0 40px;
+  }
+
+  .button-ring{
+    position:relative;
+    width:220px;
+    height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:36px;
+  }
+
+  .ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid rgba(201,168,76,0.35);
+    animation:ringSpin 12s linear infinite;
+  }
+
+  .ring.ring2{
+    inset:16px;
+    border-color:rgba(155,89,182,0.35);
+    animation-duration:16s;
+    animation-direction:reverse;
+  }
+
+  @keyframes ringSpin{
+    to{ transform:rotate(360deg); }
+  }
+
+  .ring-star{
+    position:absolute;
+    font-size:12px;
+    color:var(--gold);
+    animation:twinklePulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes twinklePulse{
+    0%, 100%{ opacity:0.3; transform:scale(0.8); }
+    50%{ opacity:1; transform:scale(1.2); }
+  }
+
+  .btn-ask{
+    position:relative;
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    border:none;
+    background:var(--grad);
+    color:#ffffff;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    text-transform:lowercase;
+    box-shadow:0 0 30px rgba(201,168,76,0.5), 0 0 60px rgba(155,89,182,0.35);
+    animation:btnPulse 2.6s ease-in-out infinite;
+    transition:transform 0.15s ease;
+  }
+
+  .btn-ask:active{ transform:scale(0.95); }
+
+  @keyframes btnPulse{
+    0%, 100%{ box-shadow:0 0 30px rgba(201,168,76,0.5), 0 0 60px rgba(155,89,182,0.35); }
+    50%{ box-shadow:0 0 45px rgba(201,168,76,0.75), 0 0 85px rgba(155,89,182,0.55); }
+  }
+
+  .footer-brand{
+    font-size:12px;
+    color:#555;
+    letter-spacing:0.5px;
+  }
+
+  /* ---------- loading ---------- */
+  .loading-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:32px;
+  }
+
+  .mystic-circle{
+    position:relative;
+    width:160px;
+    height:160px;
+  }
+
+  .mystic-ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:3px solid transparent;
+    border-top-color:var(--gold);
+    border-right-color:var(--purple);
+    animation:mysticSpin 1.4s linear infinite;
+  }
+
+  .mystic-ring.slow{
+    inset:18px;
+    border-top-color:var(--purple);
+    border-right-color:transparent;
+    border-bottom-color:var(--gold);
+    animation-duration:2.2s;
+    animation-direction:reverse;
+  }
+
+  .mystic-core{
+    position:absolute;
+    inset:50px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(201,168,76,0.55), transparent 70%);
+    animation:coreGlow 1.6s ease-in-out infinite;
+  }
+
+  @keyframes mysticSpin{
+    to{ transform:rotate(360deg); }
+  }
+
+  @keyframes coreGlow{
+    0%, 100%{ opacity:0.5; transform:scale(0.9); }
+    50%{ opacity:1; transform:scale(1.1); }
+  }
+
+  .loading-star{
+    position:absolute;
+    font-size:14px;
+    color:var(--gold);
+    animation:twinklePulse 1.2s ease-in-out infinite;
+  }
+
+  .loading-text{
+    font-family:'Cormorant Garamond', serif;
+    font-size:20px;
+    color:var(--text);
+    min-height:28px;
+  }
+
+  /* ---------- result ---------- */
+  .result-wrap{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .answer-card{
+    position:relative;
+    width:100%;
+    background:var(--card-bg);
+    border-radius:20px;
+    padding:36px 26px;
+    margin-bottom:14px;
+    box-shadow:0 0 40px rgba(201,168,76,0.25);
+    animation:cardPop 0.6s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .answer-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:20px;
+    padding:1.5px;
+    background:var(--grad);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    pointer-events:none;
+  }
+
+  @keyframes cardPop{
+    from{ opacity:0; transform:scale(0.8); }
+    to{ opacity:1; transform:scale(1); }
+  }
+
+  .answer-text{
+    font-family:'Cormorant Garamond', serif;
+    font-size:27px;
+    font-weight:600;
+    color:#ffffff;
+    line-height:1.4;
+    text-shadow:0 0 20px rgba(201,168,76,0.5);
+    text-transform:lowercase;
+  }
+
+  .answer-meta{
+    font-size:13px;
+    color:var(--muted);
+    letter-spacing:0.5px;
+    margin-bottom:30px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:var(--radius);
+    padding:16px 28px;
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    width:100%;
+    transition:transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+    text-transform:lowercase;
+  }
+
+  .btn:active{ transform:scale(0.97); }
+
+  .btn-grad{
+    background:var(--grad);
+    color:#ffffff;
+  }
+
+  .btn-outline{
+    background:transparent;
+    color:var(--gold);
+    border:1.5px solid var(--gold);
+  }
+
+  .btn-outline:hover{
+    background:rgba(201,168,76,0.1);
+  }
+
+  .btn-stack{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+  }
+
+  .burst-particle{
+    position:fixed;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:30;
+    animation:burstFly 0.9s ease-out forwards;
+  }
+
+  @keyframes burstFly{
+    to{
+      transform:translate(var(--dx), var(--dy)) scale(0);
+      opacity:0;
+    }
+  }
+
+  .toast{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--grad);
+    color:#ffffff;
+    padding:12px 20px;
+    border-radius:var(--radius);
+    font-size:14px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:60;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  @media (max-width:360px){
+    .welcome-title{ font-size:30px; }
+    .button-ring{ width:180px; height:180px; }
+    .btn-ask{ width:120px; height:120px; font-size:13px; }
+    .answer-text{ font-size:22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-particles" id="bg-particles"></div>
+
+<div class="app">
+
+  <!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+  <section class="screen active" id="screen-welcome">
+    <h1 class="welcome-title">доверься случаю 🖤</h1>
+    <p class="welcome-sub">задай вопрос мысленно<br>сделай глубокий вдох<br>и нажми кнопку —<br>вселенная уже знает ответ</p>
+    <div class="button-ring">
+      <div class="ring"></div>
+      <div class="ring ring2"></div>
+      <button class="btn-ask" id="btn-start">узнать ответ ✨</button>
+    </div>
+    <div class="footer-brand">girl of your dream</div>
+  </section>
+
+  <!-- ЭКРАН 2: АНИМАЦИЯ -->
+  <section class="screen" id="screen-loading">
+    <div class="loading-wrap">
+      <div class="mystic-circle" id="mystic-circle">
+        <div class="mystic-ring"></div>
+        <div class="mystic-ring slow"></div>
+        <div class="mystic-core"></div>
+      </div>
+      <div class="loading-text" id="loading-text">вселенная думает... 🖤</div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3: РЕЗУЛЬТАТ -->
+  <section class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="answer-card">
+        <div class="answer-text" id="answer-text"></div>
+      </div>
+      <div class="answer-meta">вселенная решила 🖤</div>
+      <div class="btn-stack">
+        <button class="btn btn-grad" id="btn-again">спросить ещё раз 🔮</button>
+        <button class="btn btn-outline" id="btn-share">поделиться ответом 🖤</button>
+        <button class="btn btn-outline" id="btn-subscribe">эстетика столичной жизни 🖤</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">скопировано в буфер обмена 🖤</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ANSWERS = [
+    "однозначно да 🖤",
+    "вселенная говорит — иди",
+    "да — и не сомневайся",
+    "твоя интуиция уже знала ответ",
+    "конечно да — ты этого достойна",
+    "да. точка. 🖤",
+    "звёзды выстроились — вперёд",
+    "да — но сделай это красиво",
+    "определённо да 🖤",
+    "иди — потом скажешь спасибо",
+    "да — жизнь слишком коротка для сомнений",
+    "вселенная одобряет 🖤",
+    "да — и надень каблуки",
+    "абсолютно да",
+    "сердце уже знало — да",
+    "да — ты давно это заслужила",
+    "иди — не оглядывайся",
+    "да — смелее 🖤",
+    "знак свыше — да",
+    "да — и выгляди при этом безупречно",
+    "однозначно — действуй",
+    "да — мир принадлежит смелым",
+    "да — и не извиняйся за это",
+    "вперёд — судьба на твоей стороне 🖤",
+    "да — доверяй себе",
+    "да — ты уже всё решила",
+    "конечно — зачем ещё спрашивать",
+    "да — лучший момент это сейчас",
+    "вселенная кричит — да 🖤",
+    "да — и получи от этого удовольствие",
+    "да — красивые девушки не сомневаются",
+    "действуй — потом разберёшься",
+    "да — всё будет хорошо",
+    "иди — это твой момент 🖤",
+    "да — и пусть весь мир подождёт",
+    "нет — и это тоже ответ 🖤",
+    "не сейчас — но скоро",
+    "вселенная говорит подожди",
+    "нет — у тебя лучше есть",
+    "не твоё — отпусти",
+    "нет — сохрани энергию для лучшего",
+    "точно нет 🖤",
+    "нет — ты достойна большего",
+    "не стоит — доверяй ощущениям",
+    "нет — но впереди что-то лучше",
+    "пропусти — это не твоё",
+    "нет — и не объясняй почему",
+    "звёзды говорят нет 🖤",
+    "нет — твоя интуиция права",
+    "не сейчас — время придёт",
+    "нет — береги себя",
+    "определённо нет",
+    "нет — ты это чувствовала",
+    "пройди мимо — красиво и уверенно 🖤",
+    "нет — у тебя другой путь",
+    "не твоя история",
+    "нет — следующая глава лучше",
+    "вселенная защищает тебя — нет",
+    "нет — и улыбнись этому",
+    "не сейчас 🖤",
+    "а ты сама чего хочешь? 🖤",
+    "ответ уже внутри тебя",
+    "крути ещё раз — ты знаешь зачем",
+    "спроси сердце — оно умнее рулетки",
+    "вселенная смеётся — ты уже всё решила",
+    "зачем спрашивать если уже знаешь 🖤",
+    "твой страх — не повод останавливаться",
+    "делай то что заставляет тебя жить",
+    "ответ тот который ты хотела услышать",
+    "красивые девушки не ждут знаков — они сами знак 🖤",
+    "думай меньше — живи больше",
+    "жизнь слишком коротка для чужих мнений",
+    "пока ты мечтаешь — я живу 🖤",
+    "делай — потом будет что вспомнить",
+    "страх это просто волнение которое ты неправильно назвала",
+    "всё что ты хочешь — по другую сторону страха",
+    "доверяй процессу 🖤",
+    "лучший момент — тот в котором ты есть",
+    "ты уже знаешь ответ — просто боишься его",
+    "живи так чтобы было что рассказать 🖤",
+    "сомнения — это нормально, действие — это выбор",
+    "твоя интуиция никогда не ошибается",
+    "надо любить жизнь больше чем смысл жизни 🖤",
+    "будущее принадлежит тем кто действует",
+    "ты сильнее чем думаешь",
+    "крути ещё раз — это не тот ответ 😄",
+    "рулетка говорит да — твоя мама скажет нет — слушай рулетку 🖤",
+    "если сомневаешься — купи платье",
+    "ответ: иди в ресторан и подумай там 🍽",
+    "вселенная устала ждать — действуй",
+    "да — но сначала надень каблуки 👠",
+    "нет — но можно компенсировать шопингом 😄",
+    "ответ очевиден — ты просто хочешь чтобы кто-то разрешил 🖤",
+    "крутани ещё раз — первый ответ был правильным",
+    "вселенная говорит да — кошелёк говорит подумай 😄",
+    "иди — worst case scenario будет хорошая история 🖤",
+    "да — жизнь без риска это просто существование",
+    "нет — сохрани деньги на ресторан 🍽",
+    "ответ — да. вопрос — а ты готова? 🖤",
+    "всё будет хорошо — особенно если в каблуках 👠🖤"
+  ];
+
+  var LOADING_TEXTS = [
+    "вселенная думает... 🖤",
+    "ищем твой ответ... ✨",
+    "судьба решает... 🔮"
+  ];
+
+  var TELEGRAM_LINK = "https://t.me/girl_ofyour_dream";
+  var APP_LINK = window.location.href;
+
+  var state = {
+    deck: [],
+    lastAnswer: null,
+    currentAnswer: null
+  };
+
+  var screens = {
+    welcome: document.getElementById("screen-welcome"),
+    loading: document.getElementById("screen-loading"),
+    result: document.getElementById("screen-result")
+  };
+
+  function showScreen(name){
+    var current = document.querySelector(".screen.active");
+    var next = screens[name];
+    if(current === next) return;
+    if(current){
+      current.classList.remove("active");
+    }
+    next.classList.add("active");
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function freshDeck(){
+    var deck = shuffle(ANSWERS);
+    if(state.lastAnswer !== null && deck[0] === state.lastAnswer && deck.length > 1){
+      var swapIdx = 1 + Math.floor(Math.random() * (deck.length - 1));
+      var tmp = deck[0]; deck[0] = deck[swapIdx]; deck[swapIdx] = tmp;
+    }
+    return deck;
+  }
+
+  function drawAnswer(){
+    if(state.deck.length === 0){
+      state.deck = freshDeck();
+    }
+    var answer = state.deck.shift();
+    state.lastAnswer = answer;
+    return answer;
+  }
+
+  function initBgParticles(){
+    var wrap = document.getElementById("bg-particles");
+    for(var i = 0; i < 26; i++){
+      var dot = document.createElement("div");
+      dot.className = "bg-dot";
+      dot.style.left = (Math.random() * 100) + "%";
+      dot.style.bottom = "-10px";
+      dot.style.animationDuration = (10 + Math.random() * 14) + "s";
+      dot.style.animationDelay = (Math.random() * 14) + "s";
+      wrap.appendChild(dot);
+    }
+  }
+
+  function initRingStars(){
+    var ring = document.querySelector(".button-ring");
+    var count = 8;
+    for(var i = 0; i < count; i++){
+      var star = document.createElement("div");
+      star.className = "ring-star";
+      star.textContent = "✦";
+      var angle = (i / count) * Math.PI * 2;
+      var radius = 105;
+      var x = 110 + Math.cos(angle) * radius;
+      var y = 110 + Math.sin(angle) * radius;
+      star.style.left = x + "px";
+      star.style.top = y + "px";
+      star.style.animationDelay = (i * 0.3) + "s";
+      ring.appendChild(star);
+    }
+  }
+
+  function initLoadingStars(){
+    var circle = document.getElementById("mystic-circle");
+    var existing = circle.querySelectorAll(".loading-star");
+    existing.forEach(function(s){ s.remove(); });
+    var count = 6;
+    for(var i = 0; i < count; i++){
+      var star = document.createElement("div");
+      star.className = "loading-star";
+      star.textContent = "✧";
+      var angle = (i / count) * Math.PI * 2;
+      var radius = 95;
+      var x = 80 + Math.cos(angle) * radius;
+      var y = 80 + Math.sin(angle) * radius;
+      star.style.left = x + "px";
+      star.style.top = y + "px";
+      star.style.animationDelay = (i * 0.2) + "s";
+      circle.appendChild(star);
+    }
+  }
+
+  var loadingInterval = null;
+
+  function startLoading(){
+    showScreen("loading");
+    initLoadingStars();
+
+    var textEl = document.getElementById("loading-text");
+    textEl.textContent = LOADING_TEXTS[Math.floor(Math.random() * LOADING_TEXTS.length)];
+
+    loadingInterval = setInterval(function(){
+      textEl.style.opacity = 0;
+      setTimeout(function(){
+        textEl.textContent = LOADING_TEXTS[Math.floor(Math.random() * LOADING_TEXTS.length)];
+        textEl.style.opacity = 1;
+      }, 200);
+    }, 700);
+
+    var duration = 2200 + Math.random() * 600;
+
+    setTimeout(function(){
+      clearInterval(loadingInterval);
+      state.currentAnswer = drawAnswer();
+      showResult();
+    }, duration);
+  }
+
+  function showResult(){
+    document.getElementById("answer-text").textContent = state.currentAnswer;
+    showScreen("result");
+    burstParticles();
+  }
+
+  function burstParticles(){
+    var card = document.querySelector(".answer-card");
+    var rect = card.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var colors = ["#C9A84C", "#9B59B6", "#f2d98a"];
+
+    for(var i = 0; i < 22; i++){
+      var p = document.createElement("div");
+      p.className = "burst-particle";
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 80 + Math.random() * 140;
+      var dx = Math.cos(angle) * dist;
+      var dy = Math.sin(angle) * dist;
+      p.style.left = cx + "px";
+      p.style.top = cy + "px";
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.setProperty("--dx", dx + "px");
+      p.style.setProperty("--dy", dy + "px");
+      p.style.animationDuration = (0.6 + Math.random() * 0.5) + "s";
+      document.body.appendChild(p);
+      (function(el){
+        setTimeout(function(){ el.remove(); }, 1200);
+      })(p);
+    }
+  }
+
+  function shareResult(){
+    var answer = state.currentAnswer || "";
+    var shareText = "спросила вселенную —\nона ответила: " + answer + " 🖤\nзадай свой вопрос → " + APP_LINK + "\n@girl_ofyour_dream";
+
+    if(navigator.share){
+      navigator.share({
+        title: "доверься случаю",
+        text: shareText
+      }).catch(function(){});
+    } else {
+      copyToClipboard(shareText);
+    }
+  }
+
+  function copyToClipboard(text){
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+      showToast();
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(showToast).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function showToast(){
+    var toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(function(){
+      toast.classList.remove("show");
+    }, 2200);
+  }
+
+  document.getElementById("btn-start").addEventListener("click", function(){
+    startLoading();
+  });
+
+  document.getElementById("btn-again").addEventListener("click", function(){
+    startLoading();
+  });
+
+  document.getElementById("btn-share").addEventListener("click", shareResult);
+
+  document.getElementById("btn-subscribe").addEventListener("click", function(){
+    window.open(TELEGRAM_LINK, "_blank");
+  });
+
+  initBgParticles();
+  initRingStars();
+})();
+</script>
+
+</body>
+</html>
